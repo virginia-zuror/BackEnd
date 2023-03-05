@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const LineageSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
-    location: { type: String, required: true, trim: true },
     age: { type: String, required: false, trim: true },
     language: { type: String, required: false, trim: true },
     image: { type: String, required: false, trim: true },

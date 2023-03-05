@@ -6,8 +6,53 @@ const {
 
 const getAllCharacters = async (req, res, next) => {
   try {
-    const allCharacters = await Character.find();
-    return res.status(200).json({ results: allCharacters });
+    if (req.query.page && !isNaN(parseInt(req.query.page))) {
+      const numCharacters = await Character.countDocuments();
+      let page = parseInt(req.query.page);
+      let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+      let numPages =
+        numCharacters % limit > 0
+          ? numCharacters / limit + 1
+          : numCharacters / limit;
+
+      if (page > numPages || page < 1) {
+        page = 1;
+      }
+      const skip = (page - 1) * limit;
+
+      const allCharacters = await Character.find().skip(skip).limit(limit);
+
+      return res.status(200).json({
+        info: {
+          total: numCharacters,
+          page: page,
+          limit: limit,
+          next:
+            numPages >= page + 1
+              ? `http://localhost:8082/api/characters?page=${page+1}&limit=${limit}`
+              : null,
+          prev:
+            page != 1
+              ? `http://localhost:8082/api/characters?page=${page-1}&limit=${limit}`
+              : null,
+        },
+        results: allCharacters,
+      });
+    } else {
+      const allCharacters = await Character.find().limit(10);
+      const numCharacters = await Character.countDocuments();
+
+      return  res.status(200).json({
+        info: {
+          total: numCharacters,
+          page: 1,
+          limit: 10,
+          next: numCharacters > 10 ? `http://localhost:8082/api/characters?page=2&limit=10` : null,
+          prev: null,
+        },
+        results: allCharacters,
+      });
+    }
   } catch (error) {
     return next('Characters not found 😕', error);
   }
