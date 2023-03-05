@@ -1,11 +1,13 @@
 const Character = require('../models/character.model');
 
-const { deleteImgCloudinary } = require('../../middlewares/files.middlewares.js'); 
+const {
+  deleteImgCloudinary,
+} = require('../../middlewares/files.middlewares.js');
 
 const getAllCharacters = async (req, res, next) => {
   try {
     const allCharacters = await Character.find();
-    return res.status(200).json({results: allCharacters,});
+    return res.status(200).json({ results: allCharacters });
   } catch (error) {
     return next('Characters not found 😕', error);
   }
@@ -31,7 +33,7 @@ const deleteCharacter = async (req, res, next) => {
 
     if (character.image) {
       deleteImgCloudinary(character.image);
-    } 
+    }
     return res.status(200).json(character);
   } catch (error) {
     return next('Error deleting character', error);

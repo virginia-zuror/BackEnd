@@ -7,8 +7,8 @@ const LineageSchema = new Schema(
     location: { type: String, required: true, trim: true },
     age: { type: String, required: false, trim: true },
     language: { type: String, required: false, trim: true },
-    banner: { type: String, required: false, trim: true },
-    characters: [{ type: mongoose.Types.ObjectId, ref: 'Character' }],
+    image: { type: String, required: false, trim: true },
+    characters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }],
   },
   { timestamps: true }
 );
