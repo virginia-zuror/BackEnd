@@ -29,11 +29,15 @@ const getAllCharacters = async (req, res, next) => {
           limit: limit,
           next:
             numPages >= page + 1
-              ? `http://localhost:8082/api/characters?page=${page+1}&limit=${limit}`
+              ? `http://localhost:8082/api/characters?page=${
+                  page + 1
+                }&limit=${limit}`
               : null,
           prev:
             page != 1
-              ? `http://localhost:8082/api/characters?page=${page-1}&limit=${limit}`
+              ? `http://localhost:8082/api/characters?page=${
+                  page - 1
+                }&limit=${limit}`
               : null,
         },
         results: allCharacters,
@@ -42,12 +46,15 @@ const getAllCharacters = async (req, res, next) => {
       const allCharacters = await Character.find().limit(10);
       const numCharacters = await Character.countDocuments();
 
-      return  res.status(200).json({
+      return res.status(200).json({
         info: {
           total: numCharacters,
           page: 1,
           limit: 10,
-          next: numCharacters > 10 ? `http://localhost:8082/api/characters?page=2&limit=10` : null,
+          next:
+            numCharacters > 10
+              ? `http://localhost:8082/api/characters?page=2&limit=10`
+              : null,
           prev: null,
         },
         results: allCharacters,
@@ -67,7 +74,7 @@ const createCharacter = async (req, res, next) => {
     const createdCharacter = await newCharacter.save();
     return res.status(201).json(createdCharacter);
   } catch (error) {
-    return next('Failed creating Character', error);
+    return next('Failed creating Character 😓', error);
   }
 };
 
@@ -81,8 +88,28 @@ const deleteCharacter = async (req, res, next) => {
     }
     return res.status(200).json(character);
   } catch (error) {
-    return next('Error deleting character', error);
+    return next('Error deleting character 😓', error);
   }
 };
 
-module.exports = { getAllCharacters, createCharacter, deleteCharacter };
+const updateCharacter = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedCharacter = await Character.findByIdAndUpdate(
+      id,
+     req.body,
+      { new: true }
+    );
+
+    return res.status(200).json(updatedCharacter);
+  } catch (error) {
+    return next('Error modifying character 😓', error);
+  }
+};
+
+module.exports = {
+  getAllCharacters,
+  createCharacter,
+  deleteCharacter,
+  updateCharacter,
+};

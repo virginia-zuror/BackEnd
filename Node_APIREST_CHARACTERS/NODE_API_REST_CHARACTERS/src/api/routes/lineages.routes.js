@@ -6,7 +6,7 @@ const {
   getAllLineages,
   createLineage,
   deleteLineage,
-} = require('../controllers/lineages.controllers.js');
+} = require('../controllers/lineages.controllers');
 
 LineagesRoutes.get('/', getAllLineages);
 LineagesRoutes.post('/', upload.single('image'), createLineage);
